@@ -1,0 +1,78 @@
+body {
+    background-color: rgb(30, 87, 82);
+    color: rgb(196, 238, 234);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 
+                 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* --- Header and Footer --- */
+header, footer {
+    background-color: rgb(24, 67, 63);
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Ensure header/footer don’t overlap content */
+header {
+    position: relative;
+    z-index: 10;
+}
+
+footer {
+    position: relative;
+    z-index: 10;
+    bottom: 0;
+}
+
+/* --- Page Content --- */
+main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(24, 67, 63, 0.6);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Headings --- */
+h2 {
+    color: rgb(155, 162, 224);
+    border-bottom: 2px solid rgb(94, 212, 143);
+    padding-bottom: 0.3rem;
+}
+
+/* --- Links --- */
+a {
+    color: rgb(94, 212, 143);
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(155, 162, 224);
+    text-decoration: underline;
+}
+
+/* --- Horizontal Rule --- */
+hr {
+    border: none;
+    height: 3px;
+    background-color: rgb(155, 162, 224);
+    width: 100%;
+    max-width: 700px;
+    margin: 1rem auto;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+    main {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+}
