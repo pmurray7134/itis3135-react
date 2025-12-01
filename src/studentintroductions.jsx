@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../studentintros.css";
+import "./studentintros.css";
 
 export default function StudentIntros() {
   const API_URL =
