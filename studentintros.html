@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class Introductions</title>
+  <link rel="stylesheet" href="studentintros.css" />
+</head>
+<body>
+  <h1>Class Introductions</h1>
+
+  <div class="top-bar">
+    <input type="text" id="search" placeholder="Search by name, email, etc..." />
+    <button onclick="toggleSingle()" id="toggleViewBtn">Show One</button>
+  </div>
+
+  <div id="studentsContainer" class="grid"></div>
+
+  <!-- Modal -->
+  <div id="modalBg" class="modal-bg" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="close-btn" onclick="closeModal()">Close</div>
+      <h2 id="modalName"></h2>
+      <p id="modalEmail"></p>
+      <p id="modalIntro"></p>
+      <div id="modalLinks"></div>
+      <pre id="modalRaw"></pre>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://dvonb.xyz/api/2025-fall/itis-3135/students?full=1";
+    const container = document.getElementById("studentsContainer");
+    const searchInput = document.getElementById("search");
+
+    let students = [];
+    let filtered = [];
+    let showSingle = false;
+    let singleIndex = 0;
+
+    async function loadStudents() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+
+      if (Array.isArray(data)) students = data;
+      else students = Object.keys(data).map(k => ({ id: k, ...data[k] }));
+
+      filtered = students;
+      render();
+    }
+
+    function render() {
+      container.innerHTML = "";
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p>No results.</p>`;
+        return;
+      }
+
+      if (showSingle) {
+        renderCard(filtered[singleIndex], singleIndex);
+        return;
+      }
+
+      filtered.forEach((student, i) => renderCard(student, i));
+    }
+
+    function renderCard(s, index) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.onclick = () => openModal(s);
+
+      const initial = s.name ? s.name.charAt(0).toUpperCase() : "?";
+      const email = s.email || s.id;
+
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-initial">${initial}</div>
+          <div>
+            <div><strong>${s.name || s.displayName || s.id}</strong></div>
+            <div class="email-text">${email}</div>
+          </div>
+        </div>
+        <div class="intro">${s.introduction || s.bio || "No intro available."}</div>
+      `;
+
+      container.appendChild(card);
+    }
+
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+      filtered = students.filter(s => JSON.stringify(s).toLowerCase().includes(q));
+      render();
+    });
+
+    function toggleSingle() {
+      showSingle = !showSingle;
+      document.getElementById("toggleViewBtn").innerText = showSingle ? "Show Grid" : "Show One";
+      render();
+    }
+
+    function openModal(s) {
+      document.getElementById("modalName").innerText = s.name || s.displayName || s.id;
+      document.getElementById("modalEmail").innerText = s.email || s.id;
+      document.getElementById("modalIntro").innerText = s.introduction || s.bio || "";
+
+      const links = s.links ? Object.entries(s.links).map(([k,v]) => `<a href='${v}' target='_blank'>${k}</a>`) : [];
+      document.getElementById("modalLinks").innerHTML = links.join("<br>");
+
+      document.getElementById("modalRaw").innerText = JSON.stringify(s, null, 2);
+
+      document.getElementById("modalBg").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modalBg").style.display = "none";
+    }
+
+    loadStudents();
+  </script>
+</body>
+</html>
